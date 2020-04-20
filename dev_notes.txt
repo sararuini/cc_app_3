@@ -1,0 +1,44 @@
+new_breed_entry = None
+    breed_id = None
+    breed_name = None 
+    breed_temperament = None
+    breed_origin = None
+    breed_wikipedia_url = None
+    breed_description = None
+    breed_life_span = None
+    #looping through each breed
+    for breed in json_breed_data:
+        value = None
+        if key == 'weight':
+            pass
+        else:
+            #assigning values to keys in order to create CatBreed object instance
+            if key == 'id':
+                breed_id = value
+            elif key == 'name':
+                breed_name = value                    
+            elif key == 'temperament':
+                breed_temperament = value
+            elif key == 'origin':
+                breed_origin = value
+            elif key == 'wikipedia_url':
+                breed_wikipedia_url = value
+            elif key == 'description':
+                breed_description = value
+            elif key == 'life_span':
+                breed_life_span = value
+
+breed_data_url = url_template + "/breeds"
+    #json_breed_data = requests.get(breed_data_url, headers=headers).json()
+
+                -----
+
+
+                for breed in json_breed_data:
+                breed_id = request.args['id']
+                breed_name = request.args['name']              
+                breed_temperament = request.args['temperament'] 
+                breed_origin = request.args['origin']
+                breed_wikipedia_url = request.args['wikipedia_url']
+                breed_description = request.args['description']
+                breed_life_span = request.args['life_span']

@@ -42,3 +42,24 @@ breed_data_url = url_template + "/breeds"
                 breed_wikipedia_url = request.args['wikipedia_url']
                 breed_description = request.args['description']
                 breed_life_span = request.args['life_span']
+
+----
+
+# #populating database
+#with app.app_context():
+#with open('breeds.json', encoding='utf-8') as cat_breeds:
+request = urllib.request.urlopen("https://api.thecatapi.com/v1/breeds?api_key=17816ca0-ede7-4033-a4cf-2dcf0b30a1f1")
+content = request.read()
+encoding = request.info().get_content_charset('utf-8')
+cat_breeds =  json.loads(content.decode(encoding))
+    #all_breeds = json.load(cat_breeds)
+for breed in cat_breeds:
+    breed_id = breed['id']
+    breed_name = breed['name']
+    breed_temperament = breed['temperament']
+    breed_origin = breed['origin']
+    breed_description = breed['description']
+    breed_life_span = breed['life_span']
+    new_breed_entry = CatBreed(id=breed_id, name=breed_name, temperament=breed_temperament, origin=breed_origin, description= breed_description, life_span =breed_life_span)
+    db.session.add(new_breed_entry)
+db.session.commit()

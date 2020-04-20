@@ -17,6 +17,7 @@ db = SQLAlchemy(app)
 
 #url templates
 url_template = "https://api.thecatapi.com/v1"
+#json cat breed data
 
 #DATABASE MODELLING
 #creating a model to insert cat breeds into database
@@ -31,12 +32,19 @@ class CatBreed(db.Model):
     life_span = db.Column(db.String(50))
 
     #defining how CatBreed objs are going to be printed
-    def _repr__(self):
-        return '<CatBreed {}>'.format(self.name, self.temperament, self.orign, self.life_span)
+    #def _repr__(self):
+    #    return '<CatBreed {}>'.format(self.name, self.temperament, self.origin, self.life_span)
 
+#authentication key passed in headers 
+headers = {'x-api-key': '17816ca0-ede7-4033-a4cf-2dcf0b30a1f1'}
+
+def populating_db():
 #populating database
-with open('breeds.json', encoding='utf-8') as cat_breeds:
-    all_breeds = json.load(cat_breeds)
+    request = urllib.request.urlopen("https://api.thecatapi.com/v1/breeds?api_key=17816ca0-ede7-4033-a4cf-2dcf0b30a1f1")
+    content = request.read()
+    encoding = request.info().get_content_charset('utf-8')
+    cat_breeds =  json.loads(content.decode(encoding))
+    breeds_to_add = []
     for breed in cat_breeds:
         breed_id = breed['id']
         breed_name = breed['name']
@@ -44,21 +52,16 @@ with open('breeds.json', encoding='utf-8') as cat_breeds:
         breed_origin = breed['origin']
         breed_description = breed['description']
         breed_life_span = breed['life_span']
+        #instantiating new breed instance
         new_breed_entry = CatBreed(id=breed_id, name=breed_name, temperament=breed_temperament, origin=breed_origin, description= breed_description, life_span =breed_life_span)
-        db.session.add(new_breed_entry)
+        breeds_to_add.append(new_breed_entry)
+    #adding all instances to datbaase
+    db.session.add_all(breeds_to_add)
     db.session.commit()
-
-#db.init_app(app)
-#populate_breeds_db() #populating db
-#app.app_context().push()
-
-#authentication key passed in headers 
-headers = {'x-api-key': '17816ca0-ede7-4033-a4cf-2dcf0b30a1f1'}
 
 @app.route("/", methods=['GET'])
 def homepage():
     return render_template("homepage.html")
-
 #run app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

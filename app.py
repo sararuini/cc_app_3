@@ -83,9 +83,9 @@ def all_breeds():
         }
         all_breeds.append(cat_breed) 
         #source used for jsonifying data https://stackoverflow.com/questions/34392892/how-to-convert-sqlalchemy-query-result-to-json-data
-        jsonified_breeds = json.dumps(all_breeds)
-        string_breeds = json.loads(jsonified_breeds)
-        return jsonify(all_breeds), 201
+    jsonified_breeds = json.dumps(all_breeds)
+    string_breeds = json.loads(jsonified_breeds)
+    return jsonify(all_breeds), 201
 
 # #get request to retrieve a specific cat breed based on breed id
 # @app.route('/breeds/<id>', methods=['GET', 'PUT', 'DELETE'])

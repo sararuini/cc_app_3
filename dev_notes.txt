@@ -63,3 +63,48 @@ for breed in cat_breeds:
     new_breed_entry = CatBreed(id=breed_id, name=breed_name, temperament=breed_temperament, origin=breed_origin, description= breed_description, life_span =breed_life_span)
     db.session.add(new_breed_entry)
 db.session.commit()
+
+
+
+#populating cat breed database
+def populating_images_db():
+    request = urllib.request.urlopen("https://api.thecatapi.com/v1/images/search?category_ids=")
+    content = request.read()
+    encoding = request.info().get_content_charset('utf-8')
+    cat_images =  json.loads(content.decode(encoding))
+    categories= list(range(1,30))
+    images_to_add = []
+    for image in cat_images:
+        img_id = image['id']
+        img_url = image['url']
+        #instantiating new breed instance
+        new_img_entry = CatImage(id=img_id, url=img_url)
+        images_to_add.append(new_img_entry)
+    #adding all instances to datbaase
+    db.session.add_all(images_to_add)
+    db.session.commit()
+
+
+class CatImage(db.Model):
+    __tablename__ = 'cat_image'
+    id = db.Column(db.String(50), primary_key=True)
+    url = db.Column(db.String(200))
+    #defining how CatBreed objs are going to be printed
+    def _repr__(self):
+        return '<CatImage {}>'.format(self.id, self.url)
+
+
+
+def all_breeds():
+    breeds = CatBreed.query.all()
+    all_breeds = []
+    for breed in breeds:
+        cat_breed = {
+            'id' : breed.id,
+            'name' : breed.name,
+            'temperament' : breed.temperament,
+            'origin' : breed.origin,
+            'description' : breed.description
+        }
+        all_breeds.append(cat_breed)
+    return render_template('breeds_display.html', all_breeds=all_breeds), 201       

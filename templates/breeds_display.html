@@ -1,0 +1,12 @@
+<html>
+<body>
+    <h1> Here are all the cat breeds in the database</h1>
+    { % for breed in all_breeds %}
+    <p> {{breed.id}} </p>
+    <p> {{breed.name}} </p> 
+    <p>  {{breed.temperament}} </p>  
+    <p>  {{breed.description}} </p>  
+    <p> {breed.origin} </p>    
+        {‰ endfor ‰}
+</body>
+</html>

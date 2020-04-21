@@ -82,13 +82,29 @@ def all_breeds():
             'description' : breed.description
         }
         all_breeds.append(cat_breed) 
-        #source used for jsonifying data https://stackoverflow.com/questions/34392892/how-to-convert-sqlalchemy-query-result-to-json-data
-    jsonified_breeds = json.dumps(all_breeds)
-    string_breeds = json.loads(jsonified_breeds)
     return jsonify(all_breeds), 201
 
-# #get request to retrieve a specific cat breed based on breed id
-# @app.route('/breeds/<id>', methods=['GET', 'PUT', 'DELETE'])
+# GET/DELETE request to retrieve/delete a specific cat breed based from db using breed id
+@app.route('/breeds/search/<id>/', methods=['GET', 'DELETE'])
+def retrieve_breed(id):
+    breed = CatBreed.query.get(id)
+    if breed:
+        cat_breed = {
+            'id' : breed.id,
+            'name' : breed.name,
+            'temperament' : breed.temperament,
+            'origin' : breed.origin,
+            'description' : breed.description
+        }
+        if request.method == 'GET':
+            return jsonify(cat_breed), 201
+        elif request.method == 'DELETE':
+            return jsonify({"cat breed deleted"}), 201
+    else: #if breed id does not exist
+        return jsonify({'breed id doest not exist'}), 404
+
+# #PUT request to retrieve a specific cat breed based on breed id
+# @app.route('/breeds/<id>/<value>', methods=[PUT'])
 # def retrieve_breed(id):
 #         if
 #         #if cat breed found print status code 200
@@ -96,7 +112,7 @@ def all_breeds():
 #         print("the cat returns")
 
 # #POST      
-# #post request to database to post your own cat picture
+# #post request to database to post your own cat breed
 # @app.route('/breeds/', methods=['POST'])
 # def retrieve_breed(id):
 #         #if category breed found print status code 200

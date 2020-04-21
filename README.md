@@ -5,7 +5,4 @@ Flask, SQLAlchemy, sqlite
 
 Instructions:
 Download the folder
-run python3 > from app import * > db.create_all()
-run python3 app.py
-
-Sample queries:
+in the cli: python3 app.py

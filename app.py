@@ -1,6 +1,5 @@
 from flask import Flask, render_template, jsonify, request
 import json
-import os
 import requests
 from flask_sqlalchemy import SQLAlchemy
 import urllib.request
@@ -34,8 +33,6 @@ class CatBreed(db.Model):
     #defining how CatBreed objs are going to be printed
     def _repr__(self):
         return '<CatBreed {}>'.format(self.name, self.temperament, self.origin, self.life_span)
-#authentication key passed in headers 
-headers = {'x-api-key': '17816ca0-ede7-4033-a4cf-2dcf0b30a1f1'}
 
 #populating cat breed database
 def populating_breeds_db():
@@ -61,7 +58,6 @@ def populating_breeds_db():
 #ROUTES!!!!
 
 #GET REQUESTS
-
 #get request to homepage
 @app.route("/", methods=['GET'])
 def homepage():
@@ -82,7 +78,7 @@ def all_breeds():
             'description' : breed.description
         }
         all_breeds.append(cat_breed) 
-    return jsonify(all_breeds), 201
+    return jsonify(all_breeds), 200
 
 # GET/DELETE request to retrieve/delete a specific cat breed based from db using breed id
 @app.route('/breeds/search/<id>/', methods=['GET', 'DELETE'])
@@ -97,27 +93,37 @@ def retrieve_breed(id):
             'description' : breed.description
         }
         if request.method == 'GET':
-            return jsonify(cat_breed), 201
-        elif request.method == 'DELETE':
-            return jsonify({"cat breed deleted"}), 201
+            return jsonify(cat_breed), 200
+        # elif request.method == 'DELETE':
+        #     breed_to_del = db.session.query(CatBreed).filter_by(id=id)
+        #     if not breed_to_del:
+        #         return jsonify({'record does not exist'}), 404
+        #     db.session.delete(breed_to_del)
+        #     db.session.commit()
+        #     return jsonify({"record deleted"}), 204
     else: #if breed id does not exist
-        return jsonify({'breed id doest not exist'}), 404
+        return jsonify({'error','breed id doest not exist'}), 404
 
-# #PUT request to retrieve a specific cat breed based on breed id
-# @app.route('/breeds/<id>/<value>', methods=[PUT'])
-# def retrieve_breed(id):
-#         if
-#         #if cat breed found print status code 200
-#         #if cat breed not found print status code 404
-#         print("the cat returns")
+#PUT      
+#put request to modify cat breed description based on id
+# @app.route('/breeds/modify/<id>/<new_descr>/', methods=['PUT'])
+# def modify_breed(id, new_descr):
+#     updated_breed = CatBreed.query.get_or_404(id)
+#     updated_breed.description = new_descr
+#     #adding new breed to datbaase
+#     db.session.commit()
+#     return jsonify(updated_breed), 201
 
-# #POST      
-# #post request to database to post your own cat breed
-# @app.route('/breeds/', methods=['POST'])
-# def retrieve_breed(id):
-#         #if category breed found print status code 200
-#         #if category not found print status code 404
-#         print("the cat returns")
+#POST      
+#post request to database to post your own cat breed
+# @app.route('/breeds/create/<id>/<name>/<temperament>/<origin>/<description>/<life_span>', methods=['POST'])
+# def create_breed(id, name, temperament, origin, description, life_span):
+#     breed = CatBreed.query.get_or_404(id)
+#     new_breed= CatBreed(id=id, name=name, temperament=temperament, origin=origin, description= description, life_span =life_span)
+#     #adding new breed to datbaase
+#     db.session.add(new_breed)
+#     db.session.commit()
+#     return jsonify(new_breed), 201
 
 #run app
 if __name__ == '__main__':
